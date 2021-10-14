@@ -252,5 +252,55 @@ def topologicalSortDFS(graph):
 
 "----------------------------------------------------------------------------------------------------------------------"
 "10. Bridges in a Graph, Articulation Points (or Cut Vertices) in a Graph (Tarjan's algorithm)"
+"10-1 articulation points"
+"10-2 Bridge in a Graph"
 
+class solution10(object):
+
+    def __init__(self, n):
+        self.n = n
+        self.T = 0
+        self.dis, self.low = [float("inf")]*n, [float("inf")]*n
+        self.AP = [False]*n
+        self.parents = {}
+        self.visited = set()
+
+    def findAP(self, graph, node):
+
+        self.visited.add(node)
+        self.dis[node], self.low[node] = self.T, self.T
+        self.T += 1
+        child = 0
+        for nei in graph[node]:
+            if nei not in self.visited:
+                child += 1
+                self.parents[nei] = node
+                self.findAP(graph, nei)
+                self.low[node] = min(self.low[node], self.low[nei])
+
+                if node not in self.parents and child > 1:
+                    self.AP[node] = True
+                if node in self.parents and self.low[nei] >= self.low[node]:
+                    self.AP[node] = True
+
+            elif self.parents[nei] != node:
+                self.low[node] = min(self.low[node], self.dis[nei])
+
+    def findBridge(self, graph, node):
+        self.visited.add(node)
+        self.dis[node], self.low[node] = self.T, self.T
+        self.T += 1
+        child = 0
+        for nei in graph[node]:
+            if nei not in self.visited:
+                child += 1
+                self.parents[nei] = node
+                self.findAP(graph, nei)
+                self.low[node] = min(self.low[node], self.low[nei])
+
+                if node in self.parents and self.low[nei] > self.low[node]:
+                    self.bridge.append((node, nei))
+
+            elif self.parents[nei] != node:
+                self.low[node] = min(self.low[node], self.dis[nei])
 "----------------------------------------------------------------------------------------------------------------------"
