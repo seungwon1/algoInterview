@@ -301,6 +301,6 @@ class solution10(object):
                 if node in self.parents and self.low[nei] > self.low[node]:
                     self.bridge.append((node, nei))
 
-            elif self.parents[nei] != node:
+            elif self.parents[node] != nei:
                 self.low[node] = min(self.low[node], self.dis[nei])
 "----------------------------------------------------------------------------------------------------------------------"
