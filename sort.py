@@ -29,8 +29,8 @@ def problem1(arr, target, boundary = (lo, hi)):
   return -1
 
 # 2. Search an element in a sorted and rotated array
-# assumption: distinct values!
-def problem2(arr, key):
+# assumption: distinct values for O(logN) complexity!
+def problem2TwoPass(arr, key):
   if len(arr) == 1:
     return 0 if arr[0] == key else -1
   
@@ -43,7 +43,6 @@ def problem2(arr, key):
       else:
         hi = mid
     return lo
-  
   idx = findPivot(arr)
   if idx == 0:
     return problem1(arr, key, (idx, len(arr)-1))
@@ -51,15 +50,81 @@ def problem2(arr, key):
     return problem1(arr, key, (0, idx-1))
   else:
     return problem1(arr, key, (idx, len(arr)-1))
-  
-# 3. Bubble Sort
 
+def problem2OnePass(arr, key):
+  lo, hi = 0, len(arr)-1
+  while lo <= hi:
+    mid = lo + (hi-lo)//2
+    if arr[mid] == target:
+      return mid
+            
+    if arr[mid] > arr[hi]:
+      if arr[lo] <= target < arr[mid]:
+        hi = mid-1
+      else:
+        lo = mid+1
+            
+    else: # arr[mid] < arr[hi]
+      if arr[mid] < target <= arr[hi]:
+        lo = mid+1
+      else:
+        hi = mid-1
+  return -1  
   
-    
-    
+def problem2DupOnePass(arr, key):
+  # one-pass solution
+  lo, hi = 0, len(arr)-1
+  while lo <= hi:
+    mid = lo + (hi-lo)//2
+    if arr[mid] == target:
+      return mid
+            
+    if arr[mid] > arr[hi]:
+      if arr[lo] <= target < arr[mid]:
+        hi = mid-1
+      else:
+        lo = mid+1
+            
+    elif arr[mid] < arr[hi]: 
+      if arr[mid] < target <= arr[hi]:
+        lo = mid+1
+      else:
+        hi = mid-1
+                    
+    else:
+      while hi >= mid and arr[hi] == arr[mid]:
+        hi -= 1
+  return -1  
+  
+# 3. Bubble Sort: O(n**2) time and O(1) space, Best case occurs when array is already sorted O(n) time.
+def bubbleSort(arr):
+  n = len(arr)
+  for i in range(n):
+    swap = False
+    for j in range(n-i-1):
+      if arr[i] > arr[i+1]:
+        arr[i+1], arr[i] = arr[i], arr[i+1]
+        swap = True
+    if not swap:
+      break
+  return arr
+
+# 4. Insertion Sort
+def insertionSort(arr):
+  n = len(arr)
   
   
   
   
   
-  return
+  
+  
+  
+  return arr
+
+# 5. Merge Sort
+
+
+
+
+
