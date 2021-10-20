@@ -250,6 +250,8 @@ def problem9(head):
 # 10. Select A Random Node from A Singly Linked List
 def problem10(head): # head of linked list, return the random node
     # reservoir sampling
+    # for each idx, pick the original element with the current element w/ probability of 1/idx+1 and keep the original element w/ probability of idx/idx+1
+    # in the end, for each element from idx == 0 to n-1, the probability of picking each element would be 1/n
     count = 0
     val = None
     while head:
