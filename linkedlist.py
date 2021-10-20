@@ -248,19 +248,14 @@ def problem9(head):
     return mergesort(head)
 
 # 10. Select A Random Node from A Singly Linked List
-def problem10():
-
-
-    return
-
-
-
-
-
-
-
-
-
-
-
-
+def problem10(head): # head of linked list, return the random node
+    # reservoir sampling
+    count = 0
+    val = None
+    while head:
+        if random.randint(0, count) == 0:
+            val = head.val
+        head = head.next
+        count += 1
+    return val
+    
