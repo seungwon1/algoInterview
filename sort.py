@@ -109,20 +109,132 @@ def bubbleSort(arr):
       break
   return arr
 
-# 4. Insertion Sort
+# 4. Insertion Sort: O(n**2) time in worst case, linear time when the array is already sorted, O(1) space, useful when 
+# binary insertion sort takes O(logn) time to insert the key but it results in O(n**2) time complexity due to the swap operation
 def insertionSort(arr):
   n = len(arr)
-  
-  
-  
-  
-  
-  
-  
-  
+  for i in range(1, n):
+    key = arr[i]
+    j = i-1
+    while j >= 0 and arr[j] > arr[i]:
+      arr[j+1] = arr[j]
+      j -= 1
+    arr[j+1] = key
   return arr
 
-# 5. Merge Sort
+# 5. Merge Sort: O(nlogn) time and O(n) space (for reconstructing a new array). For linked list, the merge operation requires O(1) space instead.
+# binary insection sort takes O(n**2) time for swapping. Divide and conquer paradigm. --> Recursively split the array and merge the splits.
+def mergeSort(arr):
+  def merge(arr1, arr2):
+    m, n = len(arr1), len(arr2)
+    ans = []
+    idx1, idx2 = 0, 0
+    
+    while idx1 < m and idx2 < n:
+      if arr1[idx1] <= arr2[idx2]:
+        ans.append(arr1[idx1])
+        idx1 += 1
+      else:
+        ans.append(arr2[idx2])
+        idx2 += 1
+    
+    if idx1 < m:
+      ans.append(arr1[idx1])
+      idx1 += 1
+      
+    if idx2 < n:
+      ans.append(arr2[idx2])
+      idx2 += 1
+    return ans
+    
+  def splitAndMerge(arr):
+    lo, hi = 0, len(arr)-1
+    if lo == hi:
+      return arr
+    
+    mid = lo + (hi-lo)//2
+    l = splitAndMerge(arr[:mid+1])
+    r = splitAndMerge(arr[mid+1:])
+    return merge(l, r)
+  
+  return splitAndMerge(arr)
+
+# 6. Heap Sort (Binary Heap): O(nlogn) time (like merge sort), O(1) space (like insection sort)! 
+# Heap sort algorithm has limited uses because Quicksort and Mergesort are better (faster) in practice.
+def heapify(arr, n, i): # max heap: O(logn) time
+  l, r = 2*i+1, 2*i+2
+  largest = i
+  if l < n and arr[l] > largest:
+    largest = l
+  if r < n and arr[r] > largest:
+    largest = r
+  if i != largest:
+    arr[i], arr[largest] = arr[i], arr[largest]
+    heapify(arr, largest, i)
+  
+def heapSort(arr):
+  n = len(arr)
+  for i in range(n//2+1, -1, -1): # total time complexity O(n)! # https://www.cs.bgu.ac.il/~ds122/wiki.files/Presentation09.pdf
+    heapify(arr, n, i)
+  
+  for i in range(n-1, 2, -1):
+    arr[0], arr[i] = arr[i], arr[0]
+    heapify(arr, i, 2)
+  return arr
+
+# 7. Quick Sort: in-place sorting (O(1) space) algorithm. O(nlogn) time on average, O(n**2) time in worst case
+# worst case: O(n**2) time when the array is already sorted (either increasing or decreasing order)
+def partition(start, end, arr):
+  val = arr[end] # One can randomly select a pivot for partitioning
+  pos = start-1
+  for i in range(start, end):
+    if arr[i] < val:
+      pos += 1
+      arr[pos], arr[i] = arr[pos], arr[i]
+  arr[i+1], arr[end] = arr[end], arr[i+1]
+  return i+1
+  
+def quick_sort(start, end, arr):
+  if start < end:
+    idx = partition(start, end, arr)
+    quick_sort(start, idx-1, arr)
+    quick_sort(idx+1, end, arr)
+    
+# 8. Interpolation Search: it assums that the value of array is uniformly distributed
+# pos  = lo + (hi-lo) * (k-arr[lo])/(arr[hi]-arr[lo])
+def interpolationSearch(arr, lo, hi, target):
+  while lo <= hi and arr[lo] <= target <= arr[hi] and arr[hi] != arr[lo]:
+    pos = lo + (hi-lo) * (target-arr[lo])/(arr[hi]-arr[lo])
+    if arr[pos] == target:
+      return pos
+    elif arr[pos] < target:
+      hi = pos-1
+    else:
+      lo = pos+1
+  return lo if arr[lo] == target else -1
+  
+# 9. Find Kth Smallest/Largest Element In Unsorted Array
+
+
+# 10. Given a sorted array and a number x, find the pair in array whose sum is closest to x
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  
+
+
+  
+  
 
 
 
