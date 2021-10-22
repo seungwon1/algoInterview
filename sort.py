@@ -204,7 +204,7 @@ def quick_sort(start, end, arr):
 # pos  = lo + (hi-lo) * (k-arr[lo])/(arr[hi]-arr[lo])
 def interpolationSearch(arr, lo, hi, target):
   while lo <= hi and arr[lo] <= target <= arr[hi] and arr[hi] != arr[lo]:
-    pos = lo + (hi-lo) * (target-arr[lo])/(arr[hi]-arr[lo])
+    pos = lo + (hi-lo) * (target-arr[lo])//(arr[hi]-arr[lo])
     if arr[pos] == target:
       return pos
     elif arr[pos] < target:
