@@ -241,38 +241,17 @@ def kthSmallest(arr, l, r, k):
 # 10. Given a sorted array and a number x, find the pair in array whose sum is closest to x
 # Naive BF: O(n**2) time and constant space
 # Sort and two-pointers: O(nlogn) time and constant space, O(n) if the array is already sorted
-def findClosest(arr, n, x):
+def findClosest(arr, n, x): # similar to two Sum problem
   arr = sorted(arr)
-  pairSumDiff = float("inf")
-  idx = 0
-  mid = idx + (len(arr)-1-idx)//2
-  
-      
-    
-    
-  
-  
-  return
-
-
-  
-
-
-  
-
-
-
-
-
-
-  
-  
-
-
-  
-  
-
-
-
-
-
+  p1, p2 = 0, len(arr)-1
+  minDiff = float("inf")
+  while p1 < p2:
+    if minDiff > abs(arr[p1]+arr[p2] - x):
+      minDiff = abs(arr[p1]+arr[p2] - x)
+      ans = arr[p1], arr[p2]
+    if arr[p1] + arr[p2] <= x:
+      p1 += 1
+    else:
+      p2 -= 1
+  return ans
+ 
