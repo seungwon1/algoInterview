@@ -213,13 +213,49 @@ def interpolationSearch(arr, lo, hi, target):
       lo = pos+1
   return lo if arr[lo] == target else -1
   
-# 9. Find Kth Smallest/Largest Element In Unsorted Array
-
-
+# 9. Find Kth Smallest/Largest Element In Unsorted Array: expected linear time!
+# find kth smallest/largest: 
+# standard sort(O(nlogn)), using heap(O(nlogk) or O(n + klogn) for optimized case), quick select (O(n) on average, O(n**2) in worst case)
+# Assumption for quickselect: all the values of elements are distinct.
+def kthSmallest(arr, l, r, k):
+  if k > 0 and k <= l-r+1:
+    # quickselect
+    # use rand function for optimization
+    piv = random.randint(l, r)
+    arr[piv], arr[r] = arr[r], arr[piv]
+    val = arr[r]
+    i = l-1
+    for j in range(l, r):
+      if arr[j] < val:
+        i += 1
+        arr[j], arr[i] = arr[i], arr[j]
+    arr[i+1], arr[r] = arr[r], arr[i+1]
+  
+    if l+k-1 == i+1:
+      return arr[i+1]
+    elif l+k-1 < i+1:
+      return kthSmallest(arr, l, i, k)
+    else:
+      return kthSmallest(arr, i+2, r, k - (i+2-l))
+    
 # 10. Given a sorted array and a number x, find the pair in array whose sum is closest to x
+# Naive BF: O(n**2) time and constant space
+# Sort and two-pointers: O(nlogn) time and constant space, O(n) if the array is already sorted
+def findClosest(arr, n, x):
+  arr = sorted(arr)
+  pairSumDiff = float("inf")
+  idx = 0
+  mid = idx + (len(arr)-1-idx)//2
+  
+      
+    
+    
+  
+  
+  return
 
 
-
+  
 
 
   
