@@ -38,6 +38,21 @@ def canRepresentBST(pre):
   return
 
 # 4. Check whether a binary tree is a full binary tree or not
+def isFullTree(root):
+  def checkFullTree(root):
+    if not root:
+      return 0
+    a = checkFullTree(root.left)
+    b = checkFullTree(root.right)
+    if a == False or b == False:
+      return False
+    else:
+      if a + b == 1:
+        return False
+      else:
+        return 1
+  return checkFullTree(root) == True
+  
 # 5. Bottom View Binary Tree
 # 6. Print Nodes in Top View of Binary Tree
 # 7. Remove nodes on root to leaf paths of length < K
