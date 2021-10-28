@@ -22,6 +22,7 @@ from collections import deque
 "----------------------------------------------------------------------------------------------------------------------"
 "1. Breadth First Search (BFS)"
 
+
 def BFS(graph, root):
     dq = deque([root])
     visited = set()
@@ -122,6 +123,7 @@ def bellmanFord(graph, src, dst, edges):  ####
 # can be used to group elements into different disjoint sets. better than naive DFS or BFS in some problems
 l = 10
 
+
 class DSU(object):
     def __init__(self):
         self.p = range(l)
@@ -162,6 +164,7 @@ class DSU(object):
 # O(N alpha(N)) time and O(E+V) space where alpha(N) is inverse ackermann which is similar to logN
 "----------------------------------------------------------------------------------------------------------------------"
 "6. Minimum Spanning tree **Prim**: connect element with minimal weights"
+
 
 def mstPrim(graph, edges, root):  # Dijkstra
     pred = {}
@@ -210,13 +213,14 @@ def mstKruskal(graph, edges):  # union-find
 "----------------------------------------------------------------------------------------------------------------------"
 "8. Topological Sort: ordering elements in directly acyclic graph, application: job (course) scheduling / ordering"
 
+
 def topologicalSortBFS(graph, edges):
     indegree = collections.defaultdict(int)
-    for (u,v) in edges: # u to v direction
+    for (u, v) in edges:  # u to v direction
         indegree[v] += 1
 
     noindegree = []
-    for (u,v) in edges:
+    for (u, v) in edges:
         if u not in indegree:
             noindegree.append(u)
 
@@ -230,9 +234,11 @@ def topologicalSortBFS(graph, edges):
                 noindegree.append(nei)
     return ans if len(ans) == len(graph) else []
 
+
 def topologicalSortDFS(graph):
     stack = []
     parent = {}
+
     def tpDFS(node):
         for nei in graph[node]:
             if nei not in parent:
@@ -247,6 +253,7 @@ def topologicalSortDFS(graph):
             tpDFS(v)
     return stack[::-1]
 
+
 "----------------------------------------------------------------------------------------------------------------------"
 "9. Boggle (Find all possible words in a board of characters), Boggle | Set 2 (Using Trie)"
 
@@ -255,13 +262,14 @@ def topologicalSortDFS(graph):
 "10-1 articulation points"
 "10-2 Bridge in a Graph"
 
+
 class solution10(object):
 
     def __init__(self, n):
         self.n = n
         self.T = 0
-        self.dis, self.low = [float("inf")]*n, [float("inf")]*n
-        self.AP = [False]*n
+        self.dis, self.low = [float("inf")] * n, [float("inf")] * n
+        self.AP = [False] * n
         self.parents = {}
         self.visited = set()
 
@@ -303,4 +311,6 @@ class solution10(object):
 
             elif self.parents[node] != nei:
                 self.low[node] = min(self.low[node], self.dis[nei])
+
+
 "----------------------------------------------------------------------------------------------------------------------"
