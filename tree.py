@@ -45,6 +45,7 @@ class findMaxSum(object):
 
 # 3. Check if a given array can represent Preorder Traversal of Binary Search Tree
 class canRepresentBST(object):
+    # two-pass recursive solution: O(n) time and O(n) space
     def nextGreater(self, arr):
         ans = []
         stack = []
@@ -67,6 +68,18 @@ class canRepresentBST(object):
             rs = nextGreater[front]
             return checkPreoder(arr, front+1, rs-1, lo, min(hi, root.val)) and checkPreoder(arr, rs, back, max(lo, root.val), hi) and lo < arr[front] < hi
         return checkPreorder(arr, 0, len(arr)-1, -float("inf"), float("inf"))
+    
+    # one-pass soluton w/ monotonic stack
+    def canRepresentBSTonePass(self, arr):
+        stack = []
+        root = -float("inf")
+        for n in arr:
+            if n < root:
+                return False
+            while stack and stack[-1] < n:
+                root = stack.pop()
+            stack.append(n)
+        return True
 
 # 4. Check whether a binary tree is a full binary tree or not
 # O(N) time and O(N) space
