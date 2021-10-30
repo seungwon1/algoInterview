@@ -200,9 +200,12 @@ def lca(root, n1, n2):
 
 # O(H) time and O(H) space
 def LCAbinSearchTree(root, n1, n2):
-    return
-
-
+    if root.data > n1 and root.data > n2:
+        return LCA(root.left, n1, n2)
+    if root.data < n1 and root.data < n2:
+        return LCA(root.right, n1, n2)
+    return root
+    
 # 9. Check if a binary tree is subtree of another binary tree ***
 # check if the first tree is subtree of the second one:
 # O(N**2) time and O(N) space
