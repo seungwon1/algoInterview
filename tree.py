@@ -36,20 +36,37 @@ class findMaxSum(object):
         def maxSum(root):
             if not root:
                 return -float("inf")
-            leftSum = maxSum(root.left)
-            rightSum = maxSum(root.right)
-            self.maxval = max(self.maxval, root.val, leftSum+root.val, rightSum+root.val, leftSum+rightSum+root.val)
-            return max(leftSum+root.val, rightSum+root.val, root.val, 0)        
+            leftSum = max(maxSum(root.left), 0)
+            rightSum = max(maxSum(root.right), 0)
+            self.maxval = max(self.maxval, leftSum+rightSum+root.val)
+            return max(leftSum+root.val, rightSum+root.val)
         maxSum(root)
         return self.maxval
 
 # 3. Check if a given array can represent Preorder Traversal of Binary Search Tree
-def canRepresentBST(pre):
+class canRepresentBST(object):
+    def nextGreater(self, arr):
+        ans = []
+        stack = []
+        n = len(arr)
+        for i in range(n-1, -1, -1):
+            while stack and arr[stack[-1]] < arr[i]:
+                stack.pop()
+            if not stack:
+                ans.append(-1)
+            else:
+                ans.append(stack[-1])
+            stack.append(i)
+        return ans[::-1]
     
-
-
-    return
-
+    def canRepresentBST(self, arr):
+        nextGreater = self.nextGreater(arr)
+        def checkPreorder(arr, front, back, lo, hi):
+            if (front > back):
+                return True
+            rs = nextGreater[front]
+            return checkPreoder(arr, front+1, rs-1, lo, min(hi, root.val)) and checkPreoder(arr, rs, back, max(lo, root.val), hi) and lo < arr[front] < hi
+        return checkPreorder(arr, 0, len(arr)-1, -float("inf"), float("inf"))
 
 # 4. Check whether a binary tree is a full binary tree or not
 # O(N) time and O(N) space
