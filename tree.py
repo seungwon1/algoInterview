@@ -255,11 +255,35 @@ def checkSubtree(root1, root2):
 
 # 10. Reverse alternate levels of a perfect binary tree
 def reverseAlternate(root):
-    # standard BFS: O(N) time and O(N) space
+    
+   def swapEven(h, dq):
+        length = len(dq)
+        idx = length-1
+        front, back = 0, idx
+        while front < back:
+            n1, n2 = dq[front][0], dq[back][0]
+            n1.left, n1.right, n2.left, n2.right = n2.left, n2.right, n1.left, n1.right
+            front += 1
+            back -= 1
+            
+    def swapOdd(prev, h, dq):
+        length = len(dq)
+        idx = length-1
+        for node in prev:
+            node.left = dq[idx][0]
+            idx -= 1
+            node.right = dq[idx][0]
+            idx -= 1
+        
+    # standard BFS: O(N) time and O(H) space
     dq = deque([(root, 1)])
-    prev = deque()
+    prev = []
+    h = 0
     while dq:
         n = len(dq)
+        if h % 2 == 1 and dq: # swap even level nodes
+            swapEven(h, dq)
+
         for _ in range(n):
             node, h = dq.popleft()
             if h % 2 == 1:
@@ -269,21 +293,8 @@ def reverseAlternate(root):
             if node.right:
                 dq.append((node.right, h+1))
 
-        if h % 2 == 1 and dq:
-            length = len(dq)
-            idx = length-1
-            front, back = 0, idx
-            while front < back:
-                n1, n2 = dq[front][0], dq[back][0]
-                n1.left, n1.right, n2.left, n2.right = n2.left, n2.right, n1.left, n1.right
-                front += 1
-                back -= 1
-
-            for node in prev:
-                node.left = dq[idx][0]
-                idx -= 1
-                node.right = dq[idx][0]
-                idx -= 1
+        if h % 2 == 1 and dq: # swap odd level nodes
+            swapOdd(prev, h, dq)
         prev = []
     return root
 
