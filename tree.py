@@ -275,7 +275,7 @@ def reverseAlternate(root):
             node.right = dq[idx][0]
             idx -= 1
         
-    # standard BFS: O(N) time and O(H) space
+    # standard BFS: O(N) time and O(N) space
     dq = deque([(root, 1)])
     prev = []
     h = 0
