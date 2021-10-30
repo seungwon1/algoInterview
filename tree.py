@@ -29,16 +29,23 @@ def minDepth(root, depth):
     return dfs(root, 1)
 
 # 2. Maximum Path Sum in a Binary Tree
-def findMaxSum(root):
-
-
-
-    return
-
+# O(N) time and O(N) space
+class findMaxSum(object):
+    def findMS(self, root):
+        self.maxval = -float("inf")
+        def maxSum(root):
+            if not root:
+                return -float("inf")
+            leftSum = maxSum(root.left)
+            rightSum = maxSum(root.right)
+            self.maxval = max(self.maxval, root.val, leftSum+root.val, rightSum+root.val, leftSum+rightSum+root.val)
+            return max(leftSum+root.val, rightSum+root.val, root.val, 0)        
+        maxSum(root)
+        return self.maxval
 
 # 3. Check if a given array can represent Preorder Traversal of Binary Search Tree
 def canRepresentBST(pre):
-
+    
 
 
     return
