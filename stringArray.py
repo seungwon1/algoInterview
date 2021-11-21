@@ -192,10 +192,22 @@ def subArraySum(arr, n, summ):
 
 
 # 10. Stock Buy Sell to Maximize Profit
+# multiple transactions: O(N) time and O(1) space
 def stockBuySell(price, n):
     ans = 0
     for i in range(1, n):
-        if price[i]-price[i-1] > 0:
-            ans += price[i]-price[i-1]
+        if price[i] - price[i - 1] > 0:
+            ans += price[i] - price[i - 1]
     return ans
-    
+
+
+# a pair of transaction: O(N) time and O(1) space
+def stockBuySellOneShot(prices, n):
+    prev = prices[0]
+    ans = 0
+    for i in range(1, n):
+        if prices[i] >= prev:
+            ans = max(ans, prices[i] - prev)
+        else:
+            prev = prices[i]
+    return ans
