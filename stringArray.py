@@ -134,7 +134,7 @@ def findLength(arr, n):
     return ans
 
 
-# follow-up: what if array contains duplicates values? --> use counter to ensure that all the elements are distinct
+# 7-2. follow-up: what if array contains duplicates values? --> use counter to ensure that all the elements are distinct
 def findLengthWithDuplicates(arr, n):
     ans = 1 if n > 0 else 0
     for i in range(n):
@@ -162,3 +162,40 @@ def findSmallest(arr, n):
             break
         smallestPosVal += arr[i]
     return smallestPosVal
+
+
+# 9. Smallest subarray with sum greater than a given value
+# brute force: O(n**2) time and O(1) space
+# better approach: O(N) time and constant space
+def smallestSubWithSum(arr, n, x):
+    if x <= 0:
+        return []
+    p1, p2 = 0, 0
+    curr = 0
+    minLength = float("inf")
+    while p2 < n:
+        while curr <= x and p2 < n:
+            curr += arr[p2]
+            p2 += 1
+
+        while curr > x and p1 < p2:
+            minLength = min(p2 - p1, minLength)
+            curr -= arr[p1]
+            p1 += 1
+
+    return minLength
+
+
+# 9-2. follow-up: with negative values (arr element and sum value)
+def subArraySum(arr, n, summ):
+    return
+
+
+# 10. Stock Buy Sell to Maximize Profit
+def stockBuySell(price, n):
+    ans = 0
+    for i in range(1, n):
+        if price[i]-price[i-1] > 0:
+            ans += price[i]-price[i-1]
+    return ans
+    
