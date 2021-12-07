@@ -288,10 +288,10 @@ class solution10(object):
 
                 if node not in self.parents and child > 1:
                     self.AP[node] = True
-                if node in self.parents and self.low[nei] >= self.low[node]:
+                if node in self.parents and self.low[nei] >= self.dis[node]:
                     self.AP[node] = True
 
-            elif self.parents[nei] != node:
+            elif self.parents[node] != nei:
                 self.low[node] = min(self.low[node], self.dis[nei])
 
     def findBridge(self, graph, node):
