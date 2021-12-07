@@ -304,7 +304,7 @@ class solution10(object):
             if nei not in self.visited:
                 child += 1
                 self.parents[nei] = node
-                self.findAP(graph, nei)
+                self.findBridge(graph, nei)
                 self.low[node] = min(self.low[node], self.low[nei])
 
                 if node in self.parents and self.low[nei] > self.low[node]:
