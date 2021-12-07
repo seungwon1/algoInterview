@@ -272,6 +272,7 @@ class solution10(object):
         self.AP = [False] * n
         self.parents = {}
         self.visited = set()
+        self.bridge = []
 
     def findAP(self, graph, node):
 
