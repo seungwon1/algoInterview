@@ -13,7 +13,10 @@
 
 
 # 1. Binary Search
-def problem1(arr, target, boundary=(lo, hi)):
+import random
+
+
+def problem1(arr, target, boundary):
     if boundary is None:
         lo, hi = 0, len(arr) - 1
     else:
@@ -55,7 +58,7 @@ def problem2TwoPass(arr, key):
         return problem1(arr, key, (idx, len(arr) - 1))
 
 
-def problem2OnePass(arr, key, target):
+def problem2OnePass(arr, target):
     lo, hi = 0, len(arr) - 1
     while lo <= hi:
         mid = lo + (hi - lo) // 2
@@ -116,22 +119,24 @@ def bubbleSort(arr):
     return arr
 
 
-# 4. Insertion Sort: O(n**2) time in worst case, linear time when the array is already sorted, O(1) space, useful when
-# binary insertion sort takes O(logn) time to insert the key but it results in O(n**2) time complexity due to the swap operation
+# 4. Insertion Sort: O(n**2) time in worst case, linear time when the array is already sorted, O(1) space,
+# useful when binary insertion sort takes O(logn) time to insert the key but it results in O(n**2) time complexity
+# due to the swap operation
 def insertionSort(arr):
     n = len(arr)
     for i in range(1, n):
         key = arr[i]
         j = i - 1
-        while j >= 0 and arr[j] > arr[i]:
+        while j >= 0 and arr[j] > key: # right shift the element that is greater than the key (arr[i])
             arr[j + 1] = arr[j]
             j -= 1
         arr[j + 1] = key
     return arr
 
 
-# 5. Merge Sort: O(nlogn) time and O(n) space (for reconstructing a new array). For linked list, the merge operation requires O(1) space instead.
-# binary insection sort takes O(n**2) time for swapping. Divide and conquer paradigm. --> Recursively split the array and merge the splits.
+# 5. Merge Sort: O(NlogN) time and O(n) space (for reconstructing a new array). For linked list, the merge operation
+# requires O(1) space instead. binary insertion sort takes O(n**2) time for swapping. Divide and conquer paradigm.
+# --> Recursively split the array and merge the splits.
 def mergeSort(arr):
     def merge(arr1, arr2):
         m, n = len(arr1), len(arr2)
@@ -179,18 +184,18 @@ def heapify(arr, n, i):  # max heap: O(logn) time
         largest = r
     if i != largest:
         arr[i], arr[largest] = arr[i], arr[largest]
-        heapify(arr, largest, i)
+        heapify(arr, n, largest)
 
 
 def heapSort(arr):
     n = len(arr)
-    for i in range(n // 2 + 1, -1,
+    for i in range(n // 2 - 1, -1,
                    -1):  # total time complexity O(n)! # https://www.cs.bgu.ac.il/~ds122/wiki.files/Presentation09.pdf
         heapify(arr, n, i)
 
-    for i in range(n - 1, 2, -1):
+    for i in range(n - 1, 0, -1):
         arr[0], arr[i] = arr[i], arr[0]
-        heapify(arr, i, 2)
+        heapify(arr, i, 0)
     return arr
 
 
@@ -203,8 +208,8 @@ def partition(start, end, arr):
         if arr[i] < val:
             pos += 1
             arr[pos], arr[i] = arr[pos], arr[i]
-    arr[i + 1], arr[end] = arr[end], arr[i + 1]
-    return i + 1
+    arr[pos + 1], arr[end] = arr[end], arr[pos + 1]
+    return pos + 1
 
 
 def quick_sort(start, end, arr):
@@ -217,7 +222,7 @@ def quick_sort(start, end, arr):
 # 8. Interpolation Search: it assums that the value of array is uniformly distributed
 # pos  = lo + (hi-lo) * (k-arr[lo])/(arr[hi]-arr[lo])
 def interpolationSearch(arr, lo, hi, target):
-    while lo <= hi and arr[lo] <= target <= arr[hi] and arr[hi] != arr[lo]:
+    while lo <= hi and arr[lo] <= target <= arr[hi] != arr[lo]:
         pos = lo + (hi - lo) * (target - arr[lo]) // (arr[hi] - arr[lo])
         if arr[pos] == target:
             return pos
