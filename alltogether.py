@@ -1,28 +1,19 @@
 import sys
-
 input = sys.stdin.readline
-
 
 def readList():
     return list(map(int, input().split()))
-
-
 def readInt():
     return int(input())
-
-
 def readInts():
     return map(int, input().split())
-
-
 def readStr():
     return input().strip()
 
-
 # BF, EC, DB, CC, CL
 def solve():
-    return
 
+    return
 
 for _ in range(int(input())):
     print(solve())
@@ -100,12 +91,7 @@ class DSU:
         return False
 
 
-# lazy segtree
-# https://codeforces.com/contest/558/submission/216810021
-# https://codeforces.com/contest/580/status/E
-# https://codeforces.com/contest/580/submission/148154945
-# https://codeforces.com/contest/580/submission/228666804
-# https://codeforces.com/contest/1709/submission/165259913
+# SegTree
 # ope- min, min & cnt, gcd & lcm,
 class SegTree:
     def __init__(self, n, e, ope, lst=[]):
@@ -178,16 +164,22 @@ class SegTree:
                 idx, f, b = 2 * idx + 1, (f + b) // 2 + 1, b
         return idx
 
+    # TODO
+    def first_greater(self, l):
 
+        return
+    
 # Lazy Segment Tree
+
+# https://codeforces.com/contest/580/status/E
+# https://codeforces.com/contest/580/submission/148154945
+# https://codeforces.com/contest/580/submission/228666804
+
+# https://codeforces.com/contest/1709/submission/165259913
+
+# https://codeforces.com/contest/558/problem/E
+# https://codeforces.com/contest/558/submission/216810021
 """
-        V:  初始序列，树叶节点
-        OP: 节点/线段 之间的合并操作
-        E:  节点/线段 幺元。op(e, x) = op(x, e) = x
-        Mapping:        对线段进行F操作
-        COMPOSITION:    复合F与G：返回F(G(seg))
-        ID:             恒等映射：F(ID(seg)) = F(seg)
-        
         V: Initial sequence, leaf nodes
         OP: Merge operation between nodes/segments
         E: Identity element for nodes/segments. op(e, x) = op(x, e) = x
@@ -211,6 +203,7 @@ class LazySegTree:
         self._all_apply(2 * k + 1, self.lz[k])
         self.lz[k] = self.identity
 
+    # customized
     def mapping(self, a, x, l):
         if a == -1:
             return x
@@ -218,6 +211,7 @@ class LazySegTree:
             return 0
         return l
 
+    # customized
     def composite(self, a, b):
         return a if a >= 0 else b
 
@@ -284,13 +278,13 @@ class LazySegTree:
     def all_prod(self):
         return self.d[1]
 
-    # update point w/ lazy prop ?
+    # update point w/ lazy prop
     def apply_point(self, p, f):
         assert 0 <= p < self.n
         p += self.size
         for i in range(self.log, 0, -1):
             self._push(p >> i)
-        self.d[p] = self.mapping(f, self.d[p], self.length[p])  # set to 1 (length[p]) instead of set to f?
+        self.d[p] = self.mapping(f, self.d[p], self.length[p])
         for i in range(1, self.log + 1):
             self._update(p >> i)
 
@@ -323,6 +317,7 @@ class LazySegTree:
             if ((r >> i) << i) != r:
                 self._update((r - 1) >> i)
 
+    # binary search starting from the l
     def max_right(self, l, g):
         assert 0 <= l <= self.n
         assert g(self.e)
@@ -338,7 +333,7 @@ class LazySegTree:
             if not (g(self.op(sm, self.d[l]))):
                 while l < self.size:
                     self._push(l)
-                    l = (2 * l)
+                    l = 2 * l
                     if g(self.op(sm, self.d[l])):
                         sm = self.op(sm, self.d[l])
                         l += 1
@@ -348,6 +343,7 @@ class LazySegTree:
             if (l & -l) == l: break
         return self.n
 
+    # binary search starting from the right
     def min_left(self, r, g):
         assert (0 <= r <= self.n)
         assert g(self.e)
