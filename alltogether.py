@@ -164,12 +164,12 @@ class SegTree:
                 idx, f, b = 2 * idx + 1, (f + b) // 2 + 1, b
         return idx
 
-    # TODO
     def first_greater(self, l):
+        k = self.query(l)
+        return self.find_kth(0, n, k+1)
 
-        return
-    
 # Lazy Segment Tree
+# https://github.com/atcoder/ac-library/blob/master/atcoder/segtree.hpp
 
 # https://codeforces.com/contest/580/status/E
 # https://codeforces.com/contest/580/submission/148154945
@@ -328,9 +328,11 @@ class LazySegTree:
             self._push(l >> i)
         sm = self.e
         while 1:
-            while i % 2 == 0:
+            while l % 2 == 0:
                 l >>= 1
-            if not (g(self.op(sm, self.d[l]))):
+            # go left condition
+            if not g(self.op(sm, self.d[l])):
+                # loop up to the leaf node
                 while l < self.size:
                     self._push(l)
                     l = 2 * l
@@ -340,7 +342,9 @@ class LazySegTree:
                 return l - self.size
             sm = self.op(sm, self.d[l])
             l += 1
-            if (l & -l) == l: break
+            # check l is power of 2
+            if (l & -l) == l:
+                break
         return self.n
 
     # binary search starting from the right
@@ -355,8 +359,11 @@ class LazySegTree:
         sm = self.e
         while 1:
             r -= 1
-            while r > 1 and (r % 2): r >>= 1
-            if not (g(self.op(self.d[r], sm))):
+            while r > 1 and r % 2:
+                r >>= 1
+            # go left condition
+            if not g(self.op(self.d[r], sm)):
+                # loop up to the leaf node
                 while r < self.size:
                     self._push(r)
                     r = (2 * r + 1)
@@ -365,6 +372,7 @@ class LazySegTree:
                         r -= 1
                 return r + 1 - self.size
             sm = self.op(self.d[r], sm)
+            # check r is power of 2
             if (r & -r) == r:
                 break
         return 0
