@@ -1,19 +1,28 @@
 import sys
+
 input = sys.stdin.readline
+
 
 def readList():
     return list(map(int, input().split()))
+
+
 def readInt():
     return int(input())
+
+
 def readInts():
     return map(int, input().split())
+
+
 def readStr():
     return input().strip()
 
+
 # BF, EC, DB, CC, CL
 def solve():
-
     return
+
 
 for _ in range(int(input())):
     print(solve())
@@ -91,10 +100,16 @@ class DSU:
         return False
 
 
-# SegTree
+# lazy segtree
+# https://codeforces.com/contest/558/submission/216810021
+# https://codeforces.com/contest/580/status/E
+# https://codeforces.com/contest/580/submission/148154945
+# https://codeforces.com/contest/580/submission/228666804
+# https://codeforces.com/contest/1709/submission/165259913
 # ope- min, min & cnt, gcd & lcm,
 class SegTree:
     def __init__(self, n, e, ope, lst=[]):
+        # closest N0 - power of 2 - s.t., 2*n - 1 < N0
         self.N0 = 2 ** (n - 1).bit_length()
         self.e = e
         self.ope = ope
@@ -131,6 +146,7 @@ class SegTree:
         l += self.N0
         r += self.N0
         while l < r:
+            # odd --> add and shift to the right. o.w. (i.e., even) --> going upward ( >>= 1)
             if l & 1:
                 lres = self.ope(lres, self.data[l])
                 l += 1
@@ -164,12 +180,12 @@ class SegTree:
                 idx, f, b = 2 * idx + 1, (f + b) // 2 + 1, b
         return idx
 
+    # customized iterative implementation - O(logN)
+    # binary search to find the first element on the right starting from the left
     def first_greater(self, l):
-        k = self.query(l)
-        return self.find_kth(0, n, k+1)
+        return self.find_kth(0, n, self.query(0, l) + 1)
 
 # Lazy Segment Tree
-# https://github.com/atcoder/ac-library/blob/master/atcoder/segtree.hpp
 
 # https://codeforces.com/contest/580/status/E
 # https://codeforces.com/contest/580/submission/148154945
@@ -187,7 +203,6 @@ class SegTree:
         COMPOSITION: Composition of F and G: returns F(G(seg))
         ID: Identity mapping: F(ID(seg)) = F(seg)
     """
-
 
 class LazySegTree:
     def _update(self, k):
@@ -257,6 +272,7 @@ class LazySegTree:
             return self.e
         l += self.size
         r += self.size
+        # lazy prop from the root
         for i in range(self.log, 0, -1):
             if ((l >> i) << i) != l:
                 self._push(l >> i)
@@ -311,6 +327,7 @@ class LazySegTree:
             l >>= 1
             r >>= 1
         l, r = l2, r2
+        # update from the leaf
         for i in range(1, self.log + 1):
             if ((l >> i) << i) != l:
                 self._update(l >> i)
@@ -321,6 +338,7 @@ class LazySegTree:
     def max_right(self, l, g):
         assert 0 <= l <= self.n
         assert g(self.e)
+        # null case
         if l == self.n:
             return self.n
         l += self.size
@@ -335,7 +353,7 @@ class LazySegTree:
                 # loop up to the leaf node
                 while l < self.size:
                     self._push(l)
-                    l = 2 * l
+                    l *= 2
                     if g(self.op(sm, self.d[l])):
                         sm = self.op(sm, self.d[l])
                         l += 1
@@ -351,6 +369,7 @@ class LazySegTree:
     def min_left(self, r, g):
         assert (0 <= r <= self.n)
         assert g(self.e)
+        # null case
         if r == 0:
             return 0
         r += self.size
@@ -359,10 +378,9 @@ class LazySegTree:
         sm = self.e
         while 1:
             r -= 1
-            while r > 1 and r % 2:
-                r >>= 1
+            while r > 1 and (r % 2): r >>= 1
             # go left condition
-            if not g(self.op(self.d[r], sm)):
+            if not (g(self.op(self.d[r], sm))):
                 # loop up to the leaf node
                 while r < self.size:
                     self._push(r)
@@ -376,7 +394,6 @@ class LazySegTree:
             if (r & -r) == r:
                 break
         return 0
-
 
 class BIT:
     def __init__(self, n):
