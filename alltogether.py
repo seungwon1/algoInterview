@@ -186,6 +186,7 @@ class SegTree:
         return self.find_kth(0, n, self.query(0, l) + 1)
 
 # Lazy Segment Tree
+# https://github.com/atcoder/ac-library/blob/master/atcoder/segtree.hpp
 
 # https://codeforces.com/contest/580/status/E
 # https://codeforces.com/contest/580/submission/148154945
@@ -378,9 +379,10 @@ class LazySegTree:
         sm = self.e
         while 1:
             r -= 1
-            while r > 1 and (r % 2): r >>= 1
+            while r > 1 and (r % 2):
+                r >>= 1
             # go left condition
-            if not (g(self.op(self.d[r], sm))):
+            if not g(self.op(self.d[r], sm)):
                 # loop up to the leaf node
                 while r < self.size:
                     self._push(r)
