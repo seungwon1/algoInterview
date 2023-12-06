@@ -1,26 +1,19 @@
 import sys
-
 input = sys.stdin.readline
-
 
 def readList():
     return list(map(int, input().split()))
-
-
 def readInt():
     return int(input())
-
-
 def readInts():
     return map(int, input().split())
-
-
 def readStr():
     return input().strip()
 
 
-# BF-OB5, EC, DB, CC, CL
+# BF-OB, EC, DB, CC, CL
 def solve():
+
     return
 
 
@@ -113,7 +106,7 @@ class SegTree:
         self.N0 = 2 ** (n - 1).bit_length()
         self.e = e
         self.ope = ope
-        self.data = [e] * (2 * self.N0)
+        self.data = [e for _ in range((2 * self.N0))]
         if lst:
             for i in range(n):
                 self.data[self.N0 + i] = lst[i]
@@ -238,6 +231,7 @@ class LazySegTree:
         self.d = [E for i in range(2 * self.size)]
         self.length = [0] * (2 * self.size)
         self.e = E
+        # customized op
         self.op = OP
         self.identity = -1
         self.lz = [-1] * self.size
@@ -885,8 +879,118 @@ def dfs(b, graph):
                 s.append(j)
     return goal
 
+# dfs iterative in general - topological sort
+# the same as
+"""
+def dfs(v):
+    used[v] = 1
+    for nei in graph[v]:
+        if not used[nei]:
+            dfs(nei)
+    order.append(v)
+"""
+def dfs_topo(graph):
+    n = len(graph)
+    order = []
+    used = [0] * n
+    for i in range(n):
+        if not used[i]:
+            st = [(i, 0)]
+            while st:
+                node, vis = st.pop()
+                if vis:
+                    order.append(node)
+                    continue
+                if used[node]:
+                    continue
+                used[node] = 1
+                st.append((node, 1))
+                for nei in graph[node]:
+                    if not used[nei]:
+                        st.append((nei, 0))
+    return order[::-1]
+
+# finding strongly connected components
+# using order from the previous dfs, returns roots, SCCs, SCC graph
+# Kosaraju (2-dfs)
+def find_scc(order, graph, graph_rv):
+    n = len(graph_rv)
+    exp = [0] * n
+    roots = [-1] * n
+    comps = [[] for _ in range(n)]
+    graph_scc = [[] for _ in range(n)]
+    for root in order:
+        if not exp[root]:
+            tmp = []
+            st = [root]
+            exp[root] = 1
+            roots[root] = root
+            while st:
+                node = st.pop()
+                for nei in graph_rv[node]:
+                    if not exp[nei]:
+                        exp[nei] = 1
+                        st.append(nei)
+                        roots[nei] = root
+                        tmp.append(nei)
+            comps[root] = tmp
+
+    for i in range(n):
+        for j in graph[i]:
+            if roots[i] != roots[j]:
+                graph_scc[roots[j]].append(roots[i])
+    return roots, comps, graph_scc
+
+# optimized implementation for finding SCCs - Tarjan's
+# https://codeforces.com/contest/1900/submission/234484691
+class graph:
+    def __init__(self, n):
+        self.n = n
+        self.gdict = [[] for _ in range(n + 1)]
+        self.deg = [0] * (n + 1)
+
+    def add_edge(self, node1, node2):
+        self.gdict[node1].append(node2)
+        self.deg[node2] += 1
+
+    def find_SCC(self):
+        """
+        Given a directed graph, find_SCC returns a list of lists containing
+        the strongly connected components in topological order.
+        Note that this implementation can be also be used to check if a directed graph is a
+        DAG, and in that case it can be used to find the topological ordering of the nodes.
+        """
+        SCC, S, P, d = [], [], [], 0
+        depth, stack = [0] * (self.n + 1), list(range(1, self.n + 1))
+
+        while stack:
+            node = stack.pop()
+            if node < 1:
+                if P[-1] == depth[~node]:
+                    P.pop()
+                    SCC.append([])
+
+                    root = ~node
+                    while node != root:
+                        node = S.pop()
+                        SCC[-1].append(node)
+                        depth[node] = -1
+
+            elif depth[node] > 0:
+                while P[-1] > depth[node]:
+                    P.pop()
+
+            elif depth[node] == 0:
+                depth[node] = d = d + 1
+                P.append(d)
+                S.append(node)
+                stack.append(~node)
+                stack += self.gdict[node]
+
+        return SCC
 
 from functools import reduce
+
 
 
 # rolling hash
@@ -972,3 +1076,6 @@ class LCA:
             if self._bo[lv][u] | b == b: u = self._table[lv][u]
             if u == -1: return -1
         return u
+
+# grpah C++ implementations
+# https://codeforces.com/blog/entry/16221?locale=en
