@@ -330,6 +330,7 @@ class LazySegTree:
                 self._update((r - 1) >> i)
 
     # binary search starting from the l
+    # returns the leftmost idx s.t. g(query(l, idx+1)) == True
     def max_right(self, l, g):
         assert 0 <= l <= self.n
         assert g(self.e)
