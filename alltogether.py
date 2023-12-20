@@ -268,7 +268,6 @@ class LazySegTree:
         l += self.size
         r += self.size
         # lazy prop from the root
-        # not push if the whole range is convered at a particular level
         for i in range(self.log, 0, -1):
             if ((l >> i) << i) != l:
                 self._push(l >> i)
@@ -324,7 +323,6 @@ class LazySegTree:
             r >>= 1
         l, r = l2, r2
         # update from the leaf
-        # not push if the whole range is convered at a particular level
         for i in range(1, self.log + 1):
             if ((l >> i) << i) != l:
                 self._update(l >> i)
@@ -332,7 +330,7 @@ class LazySegTree:
                 self._update((r - 1) >> i)
 
     # binary search starting from the l
-    # returns the leftmost idx s.t. g(query(l, idx+1)) == True
+    # returns the leftmost idx s.t. g(query(l, idx+1)) == False, returns n if g(query(l, n)) = True
     def max_right(self, l, g):
         assert 0 <= l <= self.n
         assert g(self.e)
@@ -364,6 +362,7 @@ class LazySegTree:
         return self.n
 
     # binary search starting from the right
+    # should add -1, returns 0 if g(query(0, r+1)) = True
     def min_left(self, r, g):
         assert (0 <= r <= self.n)
         assert g(self.e)
