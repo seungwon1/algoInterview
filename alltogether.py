@@ -214,11 +214,7 @@ class LazySegTree:
 
     # customized
     def mapping(self, a, x, l):
-        if a == -1:
-            return x
-        if a == 0:
-            return 0
-        return l
+        return x if a == -1 else a
 
     # customized
     def composite(self, a, b):
