@@ -938,7 +938,8 @@ def find_scc(order, graph, graph_rv):
     for i in range(n):
         for j in graph[i]:
             if roots[i] != roots[j]:
-                graph_scc[roots[j]].append(roots[i])
+                # i <-> j
+                graph_scc[roots[i]].append(roots[j])
     return roots, comps, graph_scc
 
 # optimized implementation for finding SCCs - Tarjan's
