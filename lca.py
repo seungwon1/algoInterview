@@ -6,13 +6,13 @@ class LCA:
         self.ot = [0] * self.n
         self.d = 0
         self.ett()
-        self.v = self.d.bit_length()
-        self.par = [[0] * self.v for _ in range(self.n)]
         self.computePar()
 
     def ett(self):
+        # dfs traversal, O(N), compute beginning and end clock for each node
         root, clk = 1, 0
         st = [[root, 0, 0, 0]]
+        tmp = [0] * self.n
         while st:
             node, par, d, exp = st[-1]
             if exp:
@@ -26,7 +26,12 @@ class LCA:
                 for nei in self.graph[node]:
                     if nei != par:
                         st.append([nei, node, d+1, 0])
-                        self.par[nei][0] = node
+                        tmp[nei] = node
+
+        self.v = self.d.bit_length()
+        self.par = [[0] * self.v for _ in range(self.n)]
+        for i in range(self.n):
+            self.par[i][0] = tmp[i]
 
     def isAncestor(self, i, j):
         if self.it[i] <= self.it[j] <= self.ot[i]:
@@ -34,7 +39,7 @@ class LCA:
         elif self.it[j] <= self.it[i] <= self.ot[j]:
             return 1, j
         else:
-            return -1
+            return 0, 0
 
     def computePar(self):
         for i in range(self.n):
