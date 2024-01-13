@@ -1,58 +1,58 @@
-class LCA:
-    def __init__(self, graph):
+class Tree:
+    def __init__(self, graph, root=1, lift=1):
         self.graph = graph
         self.n = len(graph)
-        self.it = [0] * self.n
-        self.ot = [0] * self.n
-        self.d = 0
-        self.ett()
-        self.computePar()
+        self.n0 = self.n.bit_length()
+        self.root = root
+        self.depth = [0] * self.n
+        self.par = [0] * self.n
+        self.it, self.ot = [0] * self.n, [0] * self.n
+        self.ot[0] = self.n
+        self.walk = []
+        self.dfs(lift)
 
-    def ett(self):
-        # dfs traversal, O(N), compute beginning and end clock for each node
-        root, clk = 1, 0
-        st = [[root, 0, 0, 0]]
-        tmp = [0] * self.n
+    def dfs(self, lift):
+        st = [[self.root, 0, 0, 0]]
+        clk = 0
         while st:
-            node, par, d, exp = st[-1]
+            node, p, d, exp = st[-1]
             if exp:
-                self.ot[node] = clk
-                self.d = max(self.d, d)
                 st.pop()
-            else:
-                st[-1][-1] = 1
-                clk += 1
-                self.it[node] = clk
-                for nei in self.graph[node]:
-                    if nei != par:
-                        st.append([nei, node, d+1, 0])
-                        tmp[nei] = node
+                self.depth[node] = d
+                self.ot[node] = clk
+                continue
+            st[-1][-1] = 1
+            clk += 1
+            self.it[node] = clk
+            for nei in self.graph[node]:
+                if nei != p:
+                    st.append([nei, node, d+1, 0])
+                    self.par[nei] = node
+        if lift:
+            self.computeWalk()
 
-        self.v = self.d.bit_length()
-        self.par = [[0] * self.v for _ in range(self.n)]
-        for i in range(self.n):
-            self.par[i][0] = tmp[i]
+    def computeWalk(self):
+        self.walk = [[0] * self.n0 for _ in range(self.n)]
+        for j in range(self.n0):
+            for i in range(1, self.n):
+                self.walk[i][j] = self.walk[self.walk[i][j-1]][j-1] if j else self.par[i]
+
+    def dist(self, i, j):
+        return self.depth[i] + self.depth[j] - 2 * self.depth[self.findLCA(i, j)]
 
     def isAncestor(self, i, j):
-        if self.it[i] <= self.it[j] <= self.ot[i]:
-            return 1, i
-        elif self.it[j] <= self.it[i] <= self.ot[j]:
-            return 1, j
-        else:
-            return 0, 0
-
-    def computePar(self):
-        for i in range(self.n):
-            for j in range(self.v - 1):
-                self.par[i][j + 1] = self.par[self.par[i][j]][j]
+        return self.it[i] <= self.it[j] <= self.ot[i]
 
     def findLCA(self, i, j):
-        # compute LCA in O(logN) time using binary lifting
-        lca = self.isAncestor(i, j)
-        if lca[0]:
-            return lca[1]
-        for d in range(self.v-1, -1, -1):
-            if not self.isAncestor(self.par[i][d], j)[0]:
-                i = self.par[i][d]
-        return i
+        if self.isAncestor(i, j):
+            return i
+        elif self.isAncestor(j, i):
+            return j
+        else:
+            for step in range(self.n0-1, -1, -1):
+                if self.walk[i][step] == 0 or self.isAncestor(self.walk[i][step], j):
+                    continue
+                i = self.walk[i][step]
+            return self.walk[i][0]
+
     
