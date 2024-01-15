@@ -264,7 +264,7 @@ class LazySegTree:
         l += self.size
         r += self.size
         # lazy prop from the root
-        # not push if the whole range is convered at a particular level
+        # not push if the whole range is covered at a particular level
         for i in range(self.log, 0, -1):
             if ((l >> i) << i) != l:
                 self._push(l >> i)
@@ -320,7 +320,7 @@ class LazySegTree:
             r >>= 1
         l, r = l2, r2
         # update from the leaf
-        # not push if the whole range is convered at a particular level
+        # not push if the whole range is covered at a particular level
         for i in range(1, self.log + 1):
             if ((l >> i) << i) != l:
                 self._update(l >> i)
