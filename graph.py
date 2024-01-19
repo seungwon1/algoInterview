@@ -72,6 +72,8 @@ def dijkstra(graph, src, dst):
         cost, node = heapq.heappop(heap)
         if node == dst:
             return cost
+        if values[node] != cost:
+            continue
         for nei, ac in graph[node]:
             if values[nei] > cost + ac:
                 values[nei] = cost + ac
