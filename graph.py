@@ -324,7 +324,7 @@ g = [[1, 2], [0, 2, 3, 4, 6], [0, 1], [1, 5], [1, 5], [3, 4], [1]] # 1-6
 def findingBridges(graph):
     n = len(graph)
     tin, low = [n] * n, [n] * n
-    used, par = [0] * n
+    used = [0] * n
     clk = 0
     bridges = []
     order = []
