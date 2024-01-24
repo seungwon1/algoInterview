@@ -357,4 +357,42 @@ def findingBridges(graph):
                     low[node] = min(low[node], tin[to])
     return bridges
 
+# finding AP - iterative DFS
+def findingAP(graph):
+    n = len(graph)
+    tin, low = [n] * n, [n] * n
+    used = [0] * n
+    clk = 0
+    points = [0] * n
+    for i in range(n):
+        if used[i]:
+            continue
+        st = [(i, -1, 0)]  # can be (i, 0) and use par []
+        cnt = 0
+        while st:
+            node, p, vis = st.pop()
+            if vis:
+                for to in graph[node]:
+                    if to == p:
+                        continue
+                    low[node] = min(low[node], low[to])
+                    if tin[node] <= low[to] and node != i:
+                        points[node] = 1
+                continue
+            if used[node]:
+                continue
+            if p == i:
+                cnt += 1
+            clk += 1
+            tin[node] = low[node] = clk
+            used[node] = 1
+            st.append((node, p, 1))
+            for to in graph[node]:
+                if not used[to]:
+                    st.append((to, node, 0))
+                elif to != p and p != -1:
+                    low[node] = min(low[node], tin[to])
+        if cnt > 1:
+            points[i] = 1
+    return points
 "----------------------------------------------------------------------------------------------------------------------"
