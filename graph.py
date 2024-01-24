@@ -324,20 +324,18 @@ g = [[1, 2], [0, 2, 3, 4, 6], [0, 1], [1, 5], [1, 5], [3, 4], [1]] # 1-6
 def findingBridges(graph):
     n = len(graph)
     tin, low = [n] * n, [n] * n
-    used = [0] * n
+    used, par = [0] * n, [-1] * n
     clk = 0
     bridges = []
-    order = []
     for i in range(n):
         if used[i]:
             continue
-        order = []
-        st = [(i, -1, 0)]
+        st = [(i, 0)]
         while st:
-            node, p, vis = st.pop()
+            node, vis = st.pop()
             if vis:
                 for to in graph[node]:
-                    if to == p:
+                    if to == par[node]:
                         continue
                     low[node] = min(low[node], low[to])
                     if tin[node] < low[to]:
@@ -345,15 +343,15 @@ def findingBridges(graph):
                 continue
             if used[node]:
                 continue
-            order.append(node)
             clk += 1
             tin[node] = low[node] = clk
             used[node] = 1
-            st.append((node, p, 1))
+            st.append((node, 1))
             for to in graph[node]:
                 if not used[to]:
-                    st.append((to, node, 0))
-                elif to != p and p != -1:
+                    st.append((to, 0))
+                    par[to] = node
+                elif to != par[node] and node != i:
                     low[node] = min(low[node], tin[to])
     return bridges
 
