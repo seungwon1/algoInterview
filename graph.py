@@ -321,21 +321,23 @@ g = [[0, 1, 2, 3], [0, 2], [0, 1], [0, 4], [3]] # 3-4, 0-3
 g = [[1], [0, 2], [1, 3], [2]] # 2-3, 1-2, 0-1
 g = [[1, 2], [0, 2, 3, 4, 6], [0, 1], [1, 5], [1, 5], [3, 4], [1]] # 1-6
 
+# DFS iterative, DFS - topo in graph
 def findingBridges(graph):
     n = len(graph)
     tin, low = [n] * n, [n] * n
-    used, par = [0] * n, [-1] * n
+    used = [0] * n
     clk = 0
     bridges = []
     for i in range(n):
         if used[i]:
             continue
-        st = [(i, 0)]
+        order = []
+        st = [(i, -1, 0)] # can be (i, 0) and use par []
         while st:
-            node, vis = st.pop()
+            node, p, vis = st.pop()
             if vis:
                 for to in graph[node]:
-                    if to == par[node]:
+                    if to == p:
                         continue
                     low[node] = min(low[node], low[to])
                     if tin[node] < low[to]:
@@ -343,15 +345,15 @@ def findingBridges(graph):
                 continue
             if used[node]:
                 continue
+            order.append(node)
             clk += 1
             tin[node] = low[node] = clk
             used[node] = 1
-            st.append((node, 1))
+            st.append((node, p, 1))
             for to in graph[node]:
                 if not used[to]:
-                    st.append((to, 0))
-                    par[to] = node
-                elif to != par[node] and node != i:
+                    st.append((to, node, 0))
+                elif to != p and p != -1:
                     low[node] = min(low[node], tin[to])
     return bridges
 
