@@ -326,22 +326,24 @@ def findingBridges(graph):
     n = len(graph)
     tin, low = [n] * n, [n] * n
     used = [0] * n
+    par = [-1] * n
     clk = 0
     bridges = []
     for i in range(n):
         if used[i]:
             continue
         order = []
-        st = [(i, -1, 0)] # can be (i, 0) and use par []
+        st = [(i, 0)]
         while st:
-            node, p, vis = st.pop()
+            node, vis = st.pop()
             if vis:
                 for to in graph[node]:
-                    if to == p:
+                    if to == par[node]:
                         continue
-                    low[node] = min(low[node], low[to])
-                    if tin[node] < low[to]:
-                        bridges.append((node, to))
+                    if par[to] == node:
+                        low[node] = min(low[node], low[to])
+                        if tin[node] < low[to]:
+                            bridges.append((node, to))
                 continue
             if used[node]:
                 continue
@@ -349,50 +351,54 @@ def findingBridges(graph):
             clk += 1
             tin[node] = low[node] = clk
             used[node] = 1
-            st.append((node, p, 1))
+            st.append((node, 1))
             for to in graph[node]:
                 if not used[to]:
-                    st.append((to, node, 0))
-                elif to != p and p != -1:
+                    st.append((to, 0))
+                    par[to] = node
+                elif to != par[node] and node != i:
                     low[node] = min(low[node], tin[to])
     return bridges
 
-# finding AP - iterative DFS
 def findingAP(graph):
     n = len(graph)
     tin, low = [n] * n, [n] * n
     used = [0] * n
+    par = [-1] * n
     clk = 0
     points = [0] * n
     for i in range(n):
         if used[i]:
             continue
-        st = [(i, -1, 0)]  # can be (i, 0) and use par []
+        st = [(i, 0)]
         cnt = 0
         while st:
-            node, p, vis = st.pop()
+            node, vis = st.pop()
             if vis:
                 for to in graph[node]:
-                    if to == p:
+                    if to == par[node]:
                         continue
-                    low[node] = min(low[node], low[to])
-                    if tin[node] <= low[to] and node != i:
-                        points[node] = 1
+                    if par[to] == node:
+                        low[node] = min(low[node], low[to])
+                        if tin[node] <= low[to] and node != i:
+                            points[node] = 1
                 continue
             if used[node]:
                 continue
-            if p == i:
+            if par[node] == i:
                 cnt += 1
             clk += 1
             tin[node] = low[node] = clk
             used[node] = 1
-            st.append((node, p, 1))
+            st.append((node, 1))
             for to in graph[node]:
                 if not used[to]:
-                    st.append((to, node, 0))
-                elif to != p and p != -1:
+                    st.append((to, 0))
+                    par[to] = node
+                elif to != par[node] and node != i:
                     low[node] = min(low[node], tin[to])
         if cnt > 1:
             points[i] = 1
     return points
+
 "----------------------------------------------------------------------------------------------------------------------"
