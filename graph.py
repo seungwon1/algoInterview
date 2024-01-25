@@ -400,5 +400,34 @@ def findingAP(graph):
         if cnt > 1:
             points[i] = 1
     return points
+    
+# finding bridge recursive: similar to the below
+def findAP_recursive(graph):
+    n = len(graph)
+    visited, tin, low = [0] * n, [n] * n, [n] * n
+    timer = [0]
+    cnt = []
+    ap = []
+    def dfs(node, p):
+        visited[node] = 1
+        tin[node] = low[node] = timer[0] + 1
+        timer[0] += 1
+        for to in graph[node]:
+            if to == p:
+                continue
+            elif visited[to]:
+                low[node] = min(low[node], tin[to])
+            else:
+                dfs(to, node)
+                low[node] = min(low[node], low[to])
+                if p == -1:
+                    cnt[-1] += 1
+                if tin[node] <= low[to] and p != -1:
+                    ap.append(node)
 
+    for i in range(n):
+        if not visited[i]:
+            cnt.append(0)
+            timer[-1] = 0
+            dfs(i, -1)
 "----------------------------------------------------------------------------------------------------------------------"
