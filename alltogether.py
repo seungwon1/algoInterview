@@ -1,5 +1,6 @@
 import sys
 input = sys.stdin.readline
+sys.setrecursionlimit(5 * 10 ** 4)
 
 def readList():
     return list(map(int, input().split()))
