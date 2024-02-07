@@ -13,6 +13,7 @@ def findSCC(node, tin, low, st, ist):
     for to in graph[node]:
         if tin[to] == -1:
             findSCC(to, tin, low, st, ist)
+            low[node] = min(low[node], low[to])
         elif ist[to]:
             low[node] = min(low[node], tin[node])
 
