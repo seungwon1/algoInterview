@@ -104,6 +104,7 @@ class DSU:
 class SegTree:
     def __init__(self, n, e, ope, lst=[]):
         # closest N0 - power of 2 - s.t., 2*n - 1 < N0
+        self.n = n
         self.N0 = 2 ** (n - 1).bit_length()
         self.e = e
         self.ope = ope
@@ -178,6 +179,73 @@ class SegTree:
     # binary search to find the first element on the right starting from the left
     def first_greater(self, l):
         return self.find_kth(0, n, self.query(0, l) + 1)
+
+
+    # binary search starting from the l
+    # returns the leftmost idx s.t. g(query(l, idx+1)) == False, returns n if g(query(l, n)) = True
+    def max_right(self, l, g):
+        assert 0 <= l <= self.n
+        assert g(self.e)
+        # null case
+        if l == self.n:
+            return self.n
+        l += self.N0
+        #for i in range(self.log, 0, -1):
+        #   self._push(l >> i)
+        sm = self.e
+        while 1:
+            while l % 2 == 0:
+                l >>= 1
+            # go left condition
+            if not g(self.ope(sm, self.data[l])):
+                # loop up to the leaf node
+                while l < self.N0:
+                    #self._push(l)
+                    l *= 2
+                    if g(self.ope(sm, self.data[l])):
+                        sm = self.ope(sm, self.data[l])
+                        l += 1
+                return l - self.N0
+            sm = self.ope(sm, self.data[l])
+            l += 1
+            # check l is power of 2
+            if (l & -l) == l:
+                break
+        return self.n
+
+    # binary search starting from the right
+    # should add -1, returns 0 if g(query(0, r+1)) = True
+    def min_left(self, r, g):
+        assert (0 <= r <= self.n)
+        assert g(self.e)
+        # null case
+        if r == 0:
+            return 0
+        r += self.N0
+        #for i in range(self.log, 0, -1):
+            #self._push((r - 1) >> i)
+        sm = self.e
+        while 1:
+            r -= 1
+            while r > 1 and (r % 2):
+                r >>= 1
+            # go left condition
+            if not g(self.ope(self.data[r], sm)):
+                # loop up to the leaf node
+                while r < self.N0:
+                    #self._push(r)
+                    r = (2 * r + 1)
+                    if g(self.ope(self.data[r], sm)):
+                        sm = self.ope(self.data[r], sm)
+                        r -= 1
+                return r + 1 - self.N0
+            sm = self.ope(self.data[r], sm)
+            # check r is power of 2
+            if (r & -r) == r:
+                break
+        return 0
+
+
 
 # Lazy Segment Tree
 # https://github.com/atcoder/ac-library/blob/master/atcoder/segtree.hpp
@@ -863,26 +931,14 @@ def solve():
 print(solve())
 
 
-# dfs: finding an entry point (or a back-edge) in a cycle with N nodes and N edges
-# iterative version
-def dfs(b, graph):
-    s = [b]
-    vis, p = [0] * len(graph), [0] * len(graph)
-    while s:
-        c = s.pop()
-        if vis[c]:
-            goal = c
-            break
-        vis[c] = 1
-        for j in graph[c]:
-            if j != p[c]:
-                p[j] = c
-                s.append(j)
-    return goal
 
 # dfs iterative in general - topological sort
 # the same as
 """
+## DFS recursive implementation - worked in graph and tree traversal in general
+## DFS iterative implementation 
+- only needs par for tree, needs used and vis arr for the graph traversal (due to the back-edge)
+
 def dfs(v):
     used[v] = 1
     for nei in graph[v]:
@@ -1140,3 +1196,113 @@ class LCA:
 
 # grpah C++ implementations
 # https://codeforces.com/blog/entry/16221?locale=en
+
+
+# DFS iterative, DFS - topo in graph
+def findingBridges(graph):
+    n = len(graph)
+    tin, low = [n] * n, [n] * n
+    used = [0] * n
+    par = [-1] * n
+    clk = 0
+    bridges = []
+    for i in range(n):
+        if used[i]:
+            continue
+        order = []
+        st = [(i, 0)]
+        while st:
+            node, vis = st.pop()
+            if vis:
+                for to in graph[node]:
+                    if to == par[node]:
+                        continue
+                    if par[to] == node:
+                        low[node] = min(low[node], low[to])
+                        if tin[node] < low[to]:
+                            bridges.append((node, to))
+                continue
+            if used[node]:
+                continue
+            order.append(node)
+            clk += 1
+            tin[node] = low[node] = clk
+            used[node] = 1
+            st.append((node, 1))
+            for to in graph[node]:
+                if not used[to]:
+                    st.append((to, 0))
+                    par[to] = node
+                elif to != par[node] and node != i:
+                    low[node] = min(low[node], tin[to])
+    return bridges
+
+def findingAP(graph):
+    n = len(graph)
+    tin, low = [n] * n, [n] * n
+    used = [0] * n
+    par = [-1] * n
+    clk = 0
+    points = [0] * n
+    for i in range(n):
+        if used[i]:
+            continue
+        st = [(i, 0)]
+        cnt = 0
+        while st:
+            node, vis = st.pop()
+            if vis:
+                for to in graph[node]:
+                    if to == par[node]:
+                        continue
+                    if par[to] == node:
+                        low[node] = min(low[node], low[to])
+                        if tin[node] <= low[to] and node != i:
+                            points[node] = 1
+                continue
+            if used[node]:
+                continue
+            if par[node] == i:
+                cnt += 1
+            clk += 1
+            tin[node] = low[node] = clk
+            used[node] = 1
+            st.append((node, 1))
+            for to in graph[node]:
+                if not used[to]:
+                    st.append((to, 0))
+                    par[to] = node
+                elif to != par[node] and node != i:
+                    low[node] = min(low[node], tin[to])
+        if cnt > 1:
+            points[i] = 1
+    return points
+
+def findAP_recursive(graph):
+    n = len(graph)
+    visited, tin, low = [0] * n, [n] * n, [n] * n
+    timer = [0]
+    cnt = []
+    ap = []
+    def dfs(node, p):
+        visited[node] = 1
+        tin[node] = low[node] = timer[0] + 1
+        timer[0] += 1
+        for to in graph[node]:
+            if to == p:
+                continue
+            elif visited[to]:
+                low[node] = min(low[node], tin[to])
+            else:
+                dfs(to, node)
+                low[node] = min(low[node], low[to])
+                if p == -1:
+                    cnt[-1] += 1
+                if tin[node] <= low[to] and p != -1:
+                    ap.append(node)
+
+    for i in range(n):
+        if not visited[i]:
+            cnt.append(0)
+            timer[-1] = 0
+            dfs(i, -1)
