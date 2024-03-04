@@ -54,7 +54,7 @@ def dfs1(node):
 def dfs2(node, j):
     comp[node] = j
     for to in graph_t[node]:
-        if comp[node] == -1:
+        if comp[to] == -1:
             yield dfs2(to, j)
     yield 1
 
