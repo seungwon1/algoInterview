@@ -357,7 +357,7 @@ class LazySegTree:
             if ((l >> i) << i) != l:
                 self._push(l >> i)
             if ((r >> i) << i) != r:
-                self._push(r >> i)
+                self._push((r - 1) >> i)
         sml, smr = self.e, self.e
         while l < r:
             if l & 1:
