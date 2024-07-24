@@ -977,7 +977,7 @@ def dfs_topo(graph):
                 if vis:
                     order.append(node)
                     continue
-                if used[node]:
+                if used[node]:  ## can be deleted
                     continue
                 used[node] = 1
                 st.append((node, 1))
@@ -986,6 +986,25 @@ def dfs_topo(graph):
                         st.append((nei, 0))
     return order[::-1]
 
+def dfs_topo2(graph):
+    n = len(graph)
+    topo = []
+    vis = [0] * n
+    par = [-1] * n
+    st = [(0, 0)]
+    while st:
+        node, done = st.pop()
+        if done:
+            topo.append(node)
+        else:
+            vis[node] = 1
+            st.append((node, 1))
+            for nei in graph[node]:
+                if not vis[nei]:
+                    st.append((nei, 0))
+                    par[nei] = node
+    return topo
+    
 # finding strongly connected components
 # using order from the previous dfs, returns roots, SCCs, SCC graph
 # Kosaraju (2-dfs)
