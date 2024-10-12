@@ -89,11 +89,15 @@ def dijkstra(graph, src, dst):
 def floydWarshall(graph, nodes):  # shortest distance for any (i,j) pair ####
     V = len(nodes)
     values = [[[float("inf") for _ in range(V)] for _ in range(V)] for _ in range(V)]
-
+    for i in range(V):
+        values[i][i] = 0
+    for u, v, w in graph:
+        values[u][v] = values[v][u] = w
+    
     for i in nodes:
         for j in nodes:
             for k in nodes:
-                values[i][k] = min(values[i][k], graph[i][j] + graph[j][k])
+                values[j][k] = min(values[j][k], values[j][i] + values[i][k])
     return
 
 
